@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planejador de Refeições & Despensa</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2e7d32">
+</head>
+<body>
+
+  <!-- Cabeçalho Fixo -->
+  <header class="app-header">
+    <h1>🥗 Minha Despensa</h1>
+    <span id="pantry-summary-badge" class="badge">0 itens</span>
+  </header>
+
+  <!-- Conteúdo Principal (Chaveamento de Abas) -->
+  <main class="app-content">
+
+    <!-- ABA 1: DESPENSA -->
+    <section id="tab-pantry" class="tab-content active">
+      <div class="section-header">
+        <h2>Itens na Despensa</h2>
+        <button id="btn-open-add-item" class="btn btn-primary">+ Novo Item</button>
+      </div>
+      
+      <!-- Formulário de cadastro de item -->
+      <form id="form-add-item" class="card form-card hidden">
+        <h3>Cadastrar Ingrediente</h3>
+        
+        <label for="item-name">Nome do Ingrediente</label>
+        <input type="text" id="item-name" placeholder="Ex: Tomate, Leite, Arroz" required>
+
+        <div class="form-row">
+          <div>
+            <label for="item-quantity">Quantidade</label>
+            <input type="number" id="item-quantity" step="0.01" min="0.01" placeholder="Ex: 500" required>
+          </div>
+          <div>
+            <label for="item-unit">Unidade</label>
+            <select id="item-unit" required>
+              <option value="g">Gramas (g)</option>
+              <option value="kg">Quilos (kg)</option>
+              <option value="ml">Mililitros (ml)</option>
+              <option value="l">Litros (l)</option>
+              <option value="unid">Unidade(s)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label for="item-expiration">Validade</label>
+            <input type="date" id="item-expiration" required>
+          </div>
+          <div>
+            <label for="item-price">Valor Pago (R$)</label>
+            <input type="number" id="item-price" step="0.01" min="0" placeholder="Ex: 7.50" required>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">Salvar Item</button>
+          <button type="button" id="btn-cancel-add-item" class="btn btn-secondary">Cancelar</button>
+        </div>
+      </form>
+
+      <!-- Lista de Itens Cadastrados -->
+      <div id="pantry-list" class="item-list"></div>
+    </section>
+
+    <!-- ABA 2: RECEITAS -->
+    <section id="tab-recipes" class="tab-content">
+      <div class="section-header">
+        <h2>O que cozinhar hoje?</h2>
+      </div>
+
+      <div class="filters-card card">
+        <label class="checkbox-label">
+          <input type="checkbox" id="filter-quick"> ⏱️ Rápido (máx. 20 minutos)
+        </label>
+      </div>
+
+      <div id="recipes-list" class="recipes-list"></div>
+    </section>
+
+    <!-- ABA 3: COMPRAS -->
+    <section id="tab-shopping" class="tab-content">
+      <div class="section-header">
+        <h2>Lista de Compras</h2>
+      </div>
+      <div id="shopping-list" class="shopping-list"></div>
+    </section>
+
+    <!-- ABA 4: ECONOMIA & MÉTRICAS -->
+    <section id="tab-metrics" class="tab-content">
+      <div class="section-header">
+        <h2>Desperdício Evitado</h2>
+      </div>
+      <div class="card metrics-card">
+        <div class="metric-box green">
+          <span class="metric-title">Economia Total</span>
+          <span id="total-saved-value" class="metric-value">R$ 0,00</span>
+        </div>
+        <div class="metric-box blue">
+          <span class="metric-title">Refeições Concluídas</span>
+          <span id="total-meals-count" class="metric-value">0</span>
+        </div>
+      </div>
+
+      <div class="card backup-card">
+        <h3>Backup dos Seus Dados</h3>
+        <p>Exporte seus dados para segurança ou importe em outro aparelho.</p>
+        <div class="form-actions">
+          <button id="btn-export-json" class="btn btn-secondary">📥 Exportar Backup</button>
+          <label for="import-file" class="btn btn-secondary btn-file">
+            📤 Importar Backup
+            <input type="file" id="import-file" accept=".json" style="display:none;">
+          </label>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Barra de Navegação Inferior -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="tab-pantry">
+      <span class="icon">🥫</span>
+      <span class="label">Despensa</span>
+    </button>
+    <button class="nav-btn" data-tab="tab-recipes">
+      <span class="icon">🍳</span>
+      <span class="label">Receitas</span>
+    </button>
+    <button class="nav-btn" data-tab="tab-shopping">
+      <span class="icon">🛒</span>
+      <span class="label">Compras</span>
+    </button>
+    <button class="nav-btn" data-tab="tab-metrics">
+      <span class="icon">📊</span>
+      <span class="label">Economia</span>
+    </button>
+  </nav>
+
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/pantry.js"></script>
+  <script src="assets/data/recipes-data.js"></script>
+  <script src="assets/js/recipes.js"></script>
+  <script src="assets/js/shopping.js"></script>
+  <script src="assets/js/pwa.js"></script>
+</body>
+</html>
