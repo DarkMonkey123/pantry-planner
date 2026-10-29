@@ -12,10 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // Carrega as receitas diretamente da nossa variavel sem precisar do fetch
 function loadRecipes() {
   if (typeof DEFAULT_RECIPES !== 'undefined') {
-    allRecipes = DEFAULT_RECIPES;
+    const customRecipes = getCustomRecipes(); // Le as receitas proprias
+    
+    // O operador '...' (spread) junta os dois arrays em uma lista unica
+    allRecipes = [...DEFAULT_RECIPES, ...customRecipes]; 
+    
     renderRankedRecipes();
   } else {
-    console.error('Arquivo recipes-data.js nao foi carregado corretamente.');
+    console.error('Arquivo recipes-data.js nao foi carregado.');
   }
 }
 
@@ -25,6 +29,11 @@ function initRecipeFilters() {
   if (filterQuick) {
     filterQuick.addEventListener('change', renderRankedRecipes);
   }
+}
+
+function getAllRecipes() {
+  const customRecipes = JSON.parse(localStorage.getItem('custom_recipes_v1')) || [];
+  return [...DEFAULT_RECIPES, ...customRecipes]; // União dos dois arrays
 }
 
 // Algoritmo Principal de Ranking
@@ -140,4 +149,37 @@ function getDaysToExpiration(expirationDateStr) {
   today.setHours(0, 0, 0, 0);
   const expDate = new Date(expirationDateStr + 'T00:00:00');
   return Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+}
+
+// Funçao para cadastrar uma nova receita vinda do formulario
+function handleAddCustomRecipe(event) {
+  event.preventDefault();
+
+  const title = document.getElementById('recipe-title').value.trim();
+  const prepTimeMinutes = parseInt(document.getElementById('recipe-time').value);
+  const servings = parseInt(document.getElementById('recipe-servings').value);
+  
+  // Pegamos os ingredientes digitados (ex: "Tomate: 2 unid, Ovo: 3 unid")
+  const rawIngredients = document.getElementById('recipe-ingredients').value;
+  const ingredients = parseIngredientsInput(rawIngredients);
+
+  const instructionsText = document.getElementById('recipe-instructions').value;
+  const instructions = instructionsText.split('\n').filter(step => step.trim() !== '');
+
+  const newRecipe = {
+    id: 'custom_' + Date.now(), // Gera um ID único
+    title,
+    prepTimeMinutes,
+    servings,
+    ingredients,
+    instructions
+  };
+
+  // Salva no localStorage
+  const currentCustom = getCustomRecipes();
+  currentCustom.push(newRecipe);
+  saveCustomRecipes(currentCustom);
+
+  // Recarrega a lista completa de receitas na tela
+  loadRecipes();
 }

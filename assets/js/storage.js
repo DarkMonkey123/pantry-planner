@@ -4,7 +4,9 @@
 
 const STORAGE_KEYS = {
   PANTRY: 'pantry_items_v1',
-  METRICS: 'pantry_metrics_v1'
+  METRICS: 'pantry_metrics_v1',
+  CUSTOM_RECIPES: 'custom_recipes_v1',
+  WEEKLY_PLAN: 'weakly_plan_v1'
 };
 
 // --- Funcoes do LocalStorage ---
@@ -46,4 +48,38 @@ function normalizeQuantity(quantity, unit) {
     default:
       return { value: q, baseUnit: 'unid' };
   }
+}
+
+// Busca as receitas proprias cadastradas pelo usuario
+function getCustomRecipes() {
+  const data = localStorage.getItem(STORAGE_KEYS.CUSTOM_RECIPES);
+  return data ? JOSN.parse(data) : []; // Se nao existir nada ainda, devolve uma lista vazia []
+}
+
+// Salva uma nova receita propria no localStorage
+function saveCustomRecipes(recipes) {
+  localStorage.setItem(STORAGE_KEYS.CUSTOM_RECIPES, JSON.stringify(recipes));
+}
+
+// Retorna a estrutura dos 7 dias da semana
+function getWeeklyPlan() {
+  const data = localStorage.getItem(STORAGE_KEYS.WEEKLY_PLAN);
+  
+  // Estrutura padrao inicial se a lousa estiver vazia
+  const defaultPlan = {
+    segunda: { lunch: null, dinner: null },
+    terca:   { lunch: null, dinner: null },
+    quarta:  { lunch: null, dinner: null },
+    quinta:  { lunch: null, dinner: null },
+    sexta:   { lunch: null, dinner: null },
+    sabado:  { lunch: null, dinner: null },
+    domingo: { lunch: null, dinner: null }
+  };
+
+  return data ? JSON.parse(data) : defaultPlan;
+}
+
+// Salva as alteracoes feitas na semana
+function saveWeeklyPlan(plan) {
+  localStorage.setItem(STORAGE_KEYS.WEEKLY_PLAN, JSON.stringify(plan));
 }
